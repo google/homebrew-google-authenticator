@@ -17,10 +17,10 @@ require 'formula'
 
 # noinspection ALL
 class GoogleAuthenticator < Formula
-  homepage 'https://github.com/google/google-authenticator'
-  head 'https://github.com/google/google-authenticator.git'
+  homepage 'https://github.com/google/google-authenticator-libpam'
+  head 'https://github.com/google/google-authenticator-libpam.git'
 
-  url 'https://github.com/google/google-authenticator.git'
+  url 'https://github.com/google/google-authenticator-libpam.git'
 
   depends_on 'autoconf' => :build
   depends_on 'automake' => :build
@@ -33,22 +33,22 @@ class GoogleAuthenticator < Formula
   end
 
   def install
-    cd 'libpam' do
+    cd 'src' do
       # I messed up with filename in a patch
       # # https://github.com/google/google-authenticator/pull/513
       inreplace 'google-authenticator.c', 'libqrencode.dylib.3', 'libqrencode.3.dylib'
-
-      system './bootstrap.sh'
-      system './configure', '--disable-debug', '--disable-dependency-tracking',
-             '--disable-silent-rules', "--prefix=#{prefix}"
-      system 'make'
-      system 'make', 'install'
     end
+
+    system './bootstrap.sh'
+    system './configure', '--disable-debug', '--disable-dependency-tracking',
+        '--disable-silent-rules', "--prefix=#{prefix}"
+    system 'make'
+    system 'make', 'install'
 
   end
 
   def caveats; <<-EOS.undent
-    Google Authenticator: https://github.com/google/google-authenticator/tree/master/libpam
+    Google Authenticator: https://github.com/google/google-authenticator-libpam
 
     Enable 2-factor authentication for ssh when authenticating via password:
         echo "auth required /usr/local/lib/security/pam_google_authenticator.so nullok" \
